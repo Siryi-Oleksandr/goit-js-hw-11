@@ -1,5 +1,8 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ImagesApiService } from './js/search-service';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const refs = {
   searchForm: document.querySelector('#search-form'),
   btnSearch: document.querySelector('[type="submit"]'),
@@ -7,13 +10,13 @@ const refs = {
   galleryContainer: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.js-load-more'),
 };
+const errorMessage =
+  'Sorry, there are no images matching your search query. Please try again.';
 
 refs.searchForm.addEventListener('submit', onSearch);
-// refs.btnLoadMore.addEventListener('click', onLoadMore);
+refs.btnLoadMore.addEventListener('click', onLoadMore);
 
-// TODO start
 const imagesServise = new ImagesApiService();
-// TODO end
 
 function onSearch(e) {
   e.preventDefault();
@@ -26,10 +29,18 @@ function onSearch(e) {
   imagesServise.resetPage();
   imagesServise.fetchImages().then(({ hits, totalHits }) => {
     clearImagesContainer();
+    if (hits.length === 0) {
+      return Notify.failure(errorMessage);
+    }
     showImagesList(hits);
-    console.log(hits);
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+    const lightbox = new SimpleLightbox('.gallery a');
+  });
+}
 
-    console.log(`Hooray! We found ${totalHits} images.`);
+function onLoadMore() {
+  imagesServise.fetchImages().then(({ hits, totalHits }) => {
+    showImagesList(hits);
   });
 }
 
@@ -44,7 +55,7 @@ function createMarkupImagesList(images) {
         views,
         comments,
         downloads,
-      }) => `<div class="photo-card">
+      }) => `<a href="${largeImageURL}"><div class="photo-card">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -60,7 +71,7 @@ function createMarkupImagesList(images) {
       <b>Downloads: </b> ${downloads}
     </p>
   </div>
-</div>`
+</div></a>`
     )
     .join('');
 }
