@@ -6,7 +6,6 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const refs = {
   searchForm: document.querySelector('#search-form'),
   btnSearch: document.querySelector('[type="submit"]'),
-
   galleryContainer: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.js-load-more'),
 };
@@ -16,7 +15,8 @@ const errorMessage =
 refs.searchForm.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
 
-const imagesServise = new ImagesApiService();
+const imagesServise = new ImagesApiService(); // create new copy of the Class search-service
+let gallery = new SimpleLightbox('.gallery a'); // SimpleLightbox initialization
 
 function onSearch(e) {
   e.preventDefault();
@@ -24,24 +24,31 @@ function onSearch(e) {
   imagesServise.query = e.currentTarget.elements.searchQuery.value;
 
   if (!imagesServise.query) {
-    return alert('Wrong query');
+    return Notify.failure(errorMessage);
   }
+
   imagesServise.resetPage();
-  imagesServise.fetchImages().then(({ hits, totalHits }) => {
-    clearImagesContainer();
-    if (hits.length === 0) {
-      return Notify.failure(errorMessage);
-    }
-    showImagesList(hits);
-    Notify.success(`Hooray! We found ${totalHits} images.`);
-    const lightbox = new SimpleLightbox('.gallery a');
-  });
+  // handle search result
+  imagesServise.fetchImages().then(handleSearchResult);
 }
 
 function onLoadMore() {
   imagesServise.fetchImages().then(({ hits, totalHits }) => {
     showImagesList(hits);
+    gallery.refresh(); // Destroys and reinitilized the lightbox
   });
+}
+
+function handleSearchResult(data) {
+  const { hits, totalHits } = data;
+  clearImagesContainer();
+  if (hits.length === 0) {
+    return Notify.failure(errorMessage);
+  }
+  showImagesList(hits);
+  Notify.success(`Hooray! We found ${totalHits} images.`);
+
+  gallery.refresh(); // Destroys and reinitilized the lightbox
 }
 
 function createMarkupImagesList(images) {
