@@ -1,5 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ImagesApiService } from './js/search-service';
+import { smoothPageScrolling, up } from './js/page-scroll';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -8,6 +9,7 @@ const refs = {
   btnSearch: document.querySelector('[type="submit"]'),
   galleryContainer: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.js-load-more'),
+  btnUp: document.querySelector('#back-top'),
 };
 
 const errorMessage =
@@ -15,6 +17,7 @@ const errorMessage =
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
+refs.btnUp.addEventListener('click', up);
 
 const imagesServise = new ImagesApiService(); // create new copy of the Class search-service
 let gallery = new SimpleLightbox('.gallery a'); // SimpleLightbox initialization
@@ -93,15 +96,4 @@ function showImagesList(images) {
 
 function clearImagesContainer() {
   refs.galleryContainer.innerHTML = '';
-}
-
-function smoothPageScrolling() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-    top: cardHeight * 2 - 62,
-    behavior: 'smooth',
-  });
 }
