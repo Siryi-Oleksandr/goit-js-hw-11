@@ -133,7 +133,7 @@ function isEndOfPage(totalHits) {
     showOnlyTheLastOne: true,
   };
 
-  if (isAvailableImages) {
+  if (isAvailableImages && totalHits) {
     Notify.failure(
       "We're sorry, but you've reached the end of search results.",
       notifyOptions
