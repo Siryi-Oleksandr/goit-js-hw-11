@@ -9,6 +9,7 @@ const refs = {
   galleryContainer: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.js-load-more'),
 };
+
 const errorMessage =
   'Sorry, there are no images matching your search query. Please try again.';
 
@@ -36,6 +37,16 @@ function onLoadMore() {
   imagesServise.fetchImages().then(({ hits, totalHits }) => {
     showImagesList(hits);
     gallery.refresh(); // Destroys and reinitilized the lightbox
+
+    // add smooth page scrolling
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
   });
 }
 
