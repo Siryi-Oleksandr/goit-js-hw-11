@@ -38,15 +38,7 @@ function onLoadMore() {
     showImagesList(hits);
     gallery.refresh(); // Destroys and reinitilized the lightbox
 
-    // add smooth page scrolling
-    const { height: cardHeight } = document
-      .querySelector('.gallery')
-      .firstElementChild.getBoundingClientRect();
-
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
+    smoothPageScrolling(); // add smooth page scrolling
   });
 }
 
@@ -101,4 +93,15 @@ function showImagesList(images) {
 
 function clearImagesContainer() {
   refs.galleryContainer.innerHTML = '';
+}
+
+function smoothPageScrolling() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2 - 62,
+    behavior: 'smooth',
+  });
 }
