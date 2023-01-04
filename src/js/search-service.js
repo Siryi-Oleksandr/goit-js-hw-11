@@ -3,6 +3,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const API_KEY = '32551916-52acd45cb85fdadfb1e78d261';
 const URL = `https://pixabay.com/api/`;
+export const perPage = 40;
 
 export class ImagesApiService {
   constructor() {
@@ -17,7 +18,7 @@ export class ImagesApiService {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      per_page: 40,
+      per_page: perPage,
       page: this.page,
     };
 
