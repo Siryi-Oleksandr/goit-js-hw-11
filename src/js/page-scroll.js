@@ -18,7 +18,6 @@ export function up() {
   if (top > 0) {
     window.scrollBy(0, (top + 1) / -10);
     t = setTimeout(up, 20);
-    console.log(t);
   } else clearTimeout(t);
   return false;
 }

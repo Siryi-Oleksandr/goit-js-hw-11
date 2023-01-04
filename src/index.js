@@ -65,7 +65,7 @@ function handleLoadMore(data) {
   showImagesList(hits);
   gallery.refresh(); // Destroys and reinitilized the lightbox
 
-  smoothPageScrolling(); // add smooth page scrolling
+  // smoothPageScrolling(); // add smooth page scrolling (disabled for infinite scroll) this feature actual for button Load More
 }
 
 function createMarkupImagesList(images) {
@@ -114,7 +114,7 @@ function clearImagesContainer() {
 function infiniteScroll() {
   let isAddToPage =
     window.scrollY + window.innerHeight >=
-    document.documentElement.scrollHeight;
+    document.documentElement.scrollHeight - 400;
 
   if (isAddToPage) {
     onLoadMore();
@@ -127,9 +127,10 @@ function isEndOfPage(totalHits) {
   const notifyOptions = {
     position: 'center-bottom',
     distance: '50px',
-    timeout: 5000,
+    timeout: 4000,
     clickToClose: true,
     cssAnimationStyle: 'from-bottom',
+    showOnlyTheLastOne: true,
   };
 
   if (isAvailableImages) {
