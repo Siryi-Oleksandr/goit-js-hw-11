@@ -37,7 +37,7 @@ function onSearch(e) {
 }
 
 function onLoadMore() {
-  imagesServise.fetchImages().then(({ hits, totalHits }) => {
+  imagesServise.fetchImages().then(({ hits }) => {
     showImagesList(hits);
     gallery.refresh(); // Destroys and reinitilized the lightbox
 
@@ -45,7 +45,10 @@ function onLoadMore() {
   });
 }
 
+function handleLoadMore() {}
+
 function handleSearchResult(data) {
+  if (!data) return;
   const { hits, totalHits } = data;
   clearImagesContainer();
   if (hits.length === 0) {

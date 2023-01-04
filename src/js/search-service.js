@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const API_KEY = '32551916-52acd45cb85fdadfb1e78d261';
 const URL = `https://pixabay.com/api/`;
@@ -9,7 +10,7 @@ export class ImagesApiService {
     this.page = 1;
   }
 
-  fetchImages() {
+  async fetchImages() {
     const axiosParams = {
       key: API_KEY,
       q: this.searchQuery,
@@ -20,14 +21,27 @@ export class ImagesApiService {
       page: this.page,
     };
 
-    return axios
-      .get(URL, {
+    try {
+      const response = await axios.get(URL, {
         params: axiosParams,
-      })
-      .then(response => {
-        this.incrementPage();
-        return { hits: response.data.hits, totalHits: response.data.totalHits };
+        validateStatus: function (status) {
+          return status < 500 || status !== 404; // validateStatus config option, you can define HTTP code(s) that should throw an error.
+        },
       });
+      return { hits: response.data.hits, totalHits: response.data.totalHits };
+    } catch (error) {
+      console.log('Error', error.message);
+      return Notify.failure(`${error.message}`);
+    }
+
+    // if (!response.ok) {
+    //   throw new Error(response.statusText);
+    // }
+    // const responseData = await response.then(response => {
+    //   this.incrementPage();
+    //   return { hits: response.data.hits, totalHits: response.data.totalHits };
+    // });
+    // return responseData;
   }
 
   incrementPage() {
