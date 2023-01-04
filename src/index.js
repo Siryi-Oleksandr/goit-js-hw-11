@@ -37,15 +37,8 @@ function onSearch(e) {
 }
 
 function onLoadMore() {
-  imagesServise.fetchImages().then(({ hits }) => {
-    showImagesList(hits);
-    gallery.refresh(); // Destroys and reinitilized the lightbox
-
-    smoothPageScrolling(); // add smooth page scrolling
-  });
+  imagesServise.fetchImages().then(handleLoadMore);
 }
-
-function handleLoadMore() {}
 
 function handleSearchResult(data) {
   if (!data) return;
@@ -58,6 +51,15 @@ function handleSearchResult(data) {
   Notify.success(`Hooray! We found ${totalHits} images.`);
 
   gallery.refresh(); // Destroys and reinitilized the lightbox
+}
+
+function handleLoadMore(data) {
+  if (!data) return;
+  const { hits } = data;
+  showImagesList(hits);
+  gallery.refresh(); // Destroys and reinitilized the lightbox
+
+  smoothPageScrolling(); // add smooth page scrolling
 }
 
 function createMarkupImagesList(images) {

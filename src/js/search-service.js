@@ -28,20 +28,12 @@ export class ImagesApiService {
           return status < 500 || status !== 404; // validateStatus config option, you can define HTTP code(s) that should throw an error.
         },
       });
+      this.incrementPage();
       return { hits: response.data.hits, totalHits: response.data.totalHits };
     } catch (error) {
       console.log('Error', error.message);
       return Notify.failure(`${error.message}`);
     }
-
-    // if (!response.ok) {
-    //   throw new Error(response.statusText);
-    // }
-    // const responseData = await response.then(response => {
-    //   this.incrementPage();
-    //   return { hits: response.data.hits, totalHits: response.data.totalHits };
-    // });
-    // return responseData;
   }
 
   incrementPage() {
