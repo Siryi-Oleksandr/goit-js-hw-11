@@ -17,15 +17,16 @@ const errorMessage =
   'Sorry, there are no images matching your search query. Please try again.';
 
 refs.searchForm.addEventListener('submit', onSearch);
-// refs.btnLoadMore.addEventListener('click', onLoadMore); // realized this feature too (if you want to use button - change "display: none" in css)
+refs.btnLoadMore.addEventListener('click', onLoadMore); // realized this feature too (if you want to use button - change "display: none" in css)
 refs.btnUp.addEventListener('click', up);
-window.addEventListener('scroll', throttle(infiniteScroll, 300)); // listener for infinite scroll
 
 const imagesServise = new ImagesApiService(); // create new copy of the Class search-service
 let gallery = new SimpleLightbox('.gallery a'); // SimpleLightbox initialization
 
 function onSearch(e) {
   e.preventDefault();
+
+  refs.btnLoadMore.classList.add('visually-hidden');
 
   imagesServise.query = e.currentTarget.elements.searchQuery.value;
 
@@ -45,6 +46,7 @@ function onLoadMore() {
 function handleSearchResult(data) {
   if (!data) return;
   const { hits, totalHits } = data;
+
   clearImagesContainer();
   if (hits.length === 0) {
     return Notify.failure(errorMessage);
@@ -53,6 +55,8 @@ function handleSearchResult(data) {
   Notify.success(`Hooray! We found ${totalHits} images.`);
 
   gallery.refresh(); // Destroys and reinitilized the lightbox
+
+  refs.btnLoadMore.classList.remove('visually-hidden');
 }
 
 function handleLoadMore(data) {
@@ -65,7 +69,7 @@ function handleLoadMore(data) {
   showImagesList(hits);
   gallery.refresh(); // Destroys and reinitilized the lightbox
 
-  // smoothPageScrolling(); // add smooth page scrolling (disabled for infinite scroll) this feature actual for button Load More
+  smoothPageScrolling(); // add smooth page scrolling (disabled for infinite scroll) this feature actual for button Load More
 }
 
 function createMarkupImagesList(images) {
@@ -111,15 +115,15 @@ function clearImagesContainer() {
 
 // Infinite Scroll
 
-function infiniteScroll() {
-  let isAddToPage =
-    window.scrollY + window.innerHeight >=
-    document.documentElement.scrollHeight - 400;
+// function infiniteScroll() {
+//   let isAddToPage =
+//     window.scrollY + window.innerHeight >=
+//     document.documentElement.scrollHeight - 400;
 
-  if (isAddToPage) {
-    onLoadMore();
-  }
-}
+//   if (isAddToPage) {
+//     onLoadMore();
+//   }
+// }
 
 function isEndOfPage(totalHits) {
   const allHits = totalHits ? totalHits : 1;
@@ -134,6 +138,8 @@ function isEndOfPage(totalHits) {
   };
 
   if (isAvailableImages && totalHits) {
+    refs.btnLoadMore.classList.add('visually-hidden');
+
     Notify.failure(
       "We're sorry, but you've reached the end of search results.",
       notifyOptions

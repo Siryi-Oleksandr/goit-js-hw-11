@@ -25,9 +25,6 @@ export class ImagesApiService {
     try {
       const response = await axios.get(URL, {
         params: axiosParams,
-        validateStatus: function (status) {
-          return status < 500 || status !== 404; // validateStatus config option, you can define HTTP code(s) that should throw an error.
-        },
       });
       this.incrementPage();
       return { hits: response.data.hits, totalHits: response.data.totalHits };
