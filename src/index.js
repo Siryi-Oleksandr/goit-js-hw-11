@@ -55,20 +55,19 @@ function handleSearchResult(data) {
   showImagesList(hits);
   Notify.success(`Hooray! We found ${totalHits} images.`);
 
-  gallery.refresh(); // Destroys and reinitilized the lightbox
+  isEndOfPage(totalHits); // check last page and hide button
 
-  refs.btnLoadMore.classList.remove('visually-hidden');
+  gallery.refresh(); // Destroys and reinitilized the lightbox
 }
 
 function handleLoadMore(data) {
   if (!data) return;
   const { hits, totalHits } = data;
 
-  const isAvailableImages = isEndOfPage(totalHits); // check available images to load
-  if (isAvailableImages) return;
-
   showImagesList(hits);
   gallery.refresh(); // Destroys and reinitilized the lightbox
+
+  isEndOfPage(totalHits); // check last page and hide button
 
   smoothPageScrolling(); // add smooth page scrolling (disabled for infinite scroll) this feature actual for button Load More
 }
@@ -82,7 +81,29 @@ function clearImagesContainer() {
   refs.galleryContainer.innerHTML = '';
 }
 
-// Infinite Scroll
+function isEndOfPage(totalHits) {
+  const notifyOptions = {
+    position: 'center-bottom',
+    distance: '50px',
+    timeout: 4000,
+    clickToClose: true,
+    cssAnimationStyle: 'from-bottom',
+    showOnlyTheLastOne: true,
+  };
+
+  const showBtn = imagesServise.page - 1 < Math.ceil(totalHits / perPage);
+  if (showBtn) {
+    refs.btnLoadMore.classList.remove('visually-hidden');
+  } else {
+    refs.btnLoadMore.classList.add('visually-hidden');
+    Notify.failure(
+      "We're sorry, but you've reached the end of search results.",
+      notifyOptions
+    );
+  }
+}
+
+// Infinite Scroll (leave for me)
 
 // function infiniteScroll() {
 //   let isAddToPage =
@@ -93,27 +114,3 @@ function clearImagesContainer() {
 //     onLoadMore();
 //   }
 // }
-
-function isEndOfPage(totalHits) {
-  const allHits = totalHits ? totalHits : 1;
-  const isAvailableImages = imagesServise.page > allHits / perPage;
-  const notifyOptions = {
-    position: 'center-bottom',
-    distance: '50px',
-    timeout: 4000,
-    clickToClose: true,
-    cssAnimationStyle: 'from-bottom',
-    showOnlyTheLastOne: true,
-  };
-
-  if (isAvailableImages && totalHits) {
-    refs.btnLoadMore.classList.add('visually-hidden');
-
-    Notify.failure(
-      "We're sorry, but you've reached the end of search results.",
-      notifyOptions
-    );
-    return true;
-  }
-  return false;
-}
