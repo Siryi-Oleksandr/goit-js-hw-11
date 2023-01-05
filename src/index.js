@@ -1,29 +1,23 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { ImagesApiService, perPage } from './js/search-service';
+import { refs } from './js/refs';
 import { smoothPageScrolling, up } from './js/page-scroll';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 const throttle = require('lodash.throttle');
 import { createMarkupImagesList } from './js/card-markup';
 
-const refs = {
-  searchForm: document.querySelector('#search-form'),
-  btnSearch: document.querySelector('[type="submit"]'),
-  galleryContainer: document.querySelector('.gallery'),
-  btnLoadMore: document.querySelector('.js-load-more'),
-  btnUp: document.querySelector('#back-top'),
-};
-
-const errorMessage =
-  'Sorry, there are no images matching your search query. Please try again.';
-
 refs.searchForm.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore); // realized this feature too (if you want to use button - change "display: none" in css)
 refs.btnUp.addEventListener('click', up);
 
+const errorMessage =
+  'Sorry, there are no images matching your search query. Please try again.';
+
 const imagesServise = new ImagesApiService(); // create new copy of the Class search-service
 let gallery = new SimpleLightbox('.gallery a'); // SimpleLightbox initialization
 
+// Set functions
 function onSearch(e) {
   e.preventDefault();
 
@@ -40,10 +34,6 @@ function onSearch(e) {
   imagesServise.fetchImages().then(handleSearchResult);
 }
 
-function onLoadMore() {
-  imagesServise.fetchImages().then(handleLoadMore);
-}
-
 function handleSearchResult(data) {
   if (!data) return;
   const { hits, totalHits } = data;
@@ -58,6 +48,10 @@ function handleSearchResult(data) {
   isEndOfPage(totalHits); // check last page and hide button
 
   gallery.refresh(); // Destroys and reinitilized the lightbox
+}
+
+function onLoadMore() {
+  imagesServise.fetchImages().then(handleLoadMore);
 }
 
 function handleLoadMore(data) {
@@ -96,7 +90,7 @@ function isEndOfPage(totalHits) {
     refs.btnLoadMore.classList.remove('visually-hidden');
   } else {
     refs.btnLoadMore.classList.add('visually-hidden');
-    Notify.failure(
+    Notify.info(
       "We're sorry, but you've reached the end of search results.",
       notifyOptions
     );
