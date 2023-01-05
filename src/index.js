@@ -4,6 +4,7 @@ import { smoothPageScrolling, up } from './js/page-scroll';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 const throttle = require('lodash.throttle');
+import { createMarkupImagesList } from './js/card-markup';
 
 const refs = {
   searchForm: document.querySelector('#search-form'),
@@ -70,38 +71,6 @@ function handleLoadMore(data) {
   gallery.refresh(); // Destroys and reinitilized the lightbox
 
   smoothPageScrolling(); // add smooth page scrolling (disabled for infinite scroll) this feature actual for button Load More
-}
-
-function createMarkupImagesList(images) {
-  return images
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) => `<a href="${largeImageURL}"><div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-      <b>Likes: </b> ${likes}
-    </p>
-    <p class="info-item">
-      <b>Views: </b> ${views}
-    </p>
-    <p class="info-item">
-      <b>Comments: </b> ${comments}
-    </p>
-    <p class="info-item">
-      <b>Downloads: </b> ${downloads}
-    </p>
-  </div>
-</div></a>`
-    )
-    .join('');
 }
 
 function showImagesList(images) {
