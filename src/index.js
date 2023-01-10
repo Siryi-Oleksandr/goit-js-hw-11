@@ -23,7 +23,7 @@ function onSearch(e) {
   imagesServise.query = e.currentTarget.elements.searchQuery.value;
 
   if (!imagesServise.query) {
-    return notify.getFailureMessage(errorMessage);
+    return notify.showFailureMessage(errorMessage);
   }
 
   imagesServise.resetPage();
